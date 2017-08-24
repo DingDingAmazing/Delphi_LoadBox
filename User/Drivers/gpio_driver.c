@@ -387,14 +387,14 @@ void HUB_Enable(uint8_t n)
 			GPIO_SetBits(GPIOC, B14_SBI);
 			GPIO_SetBits(GPIOA, B14_SBO);
 			break;
-		case 3:
+		case 1:
 			HUB_Half_02_deactive();
 			GPIO_SetBits(GPIOC, B14_SAI);
 			GPIO_SetBits(GPIOC, B14_SAO);
 			GPIO_SetBits(GPIOC, B14_SBI);
 			GPIO_ResetBits(GPIOA, B14_SBO);
 			break;
-		case 1:
+		case 3:
 			HUB_Half_02_deactive();
 			GPIO_ResetBits(GPIOC, B14_SAI);
 			GPIO_SetBits(GPIOC, B14_SAO);

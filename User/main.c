@@ -8,7 +8,7 @@ int main(void)
 	SysTick_Configuration();
 	iobus_init();
 	usart_init();
-//	HUB_Enable(5);
+//	HUB_Enable(1);
 //	USB_Enable_1_5(1);
 	if(0)
 	{
