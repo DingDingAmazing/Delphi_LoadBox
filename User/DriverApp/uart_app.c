@@ -180,6 +180,13 @@ void Uart2FrameOperate(void)
 					
 				case 0xf301:
 					HUB_idx = gUart2Frame.DataBuf[0];
+					HUB_en = 1;
+					if(HUB_flag == 0)
+						HUB_flag = 1;
+						break;
+					
+				case 0xf302:
+					HUB_en = 2;//disable all hubs
 					if(HUB_flag == 0)
 						HUB_flag = 1;
 						break;
@@ -229,9 +236,18 @@ void proc_envent3(void)
 {
 	if(HUB_flag==1)
 	{
-		if( (HUB_idx>3) && (HUB_idx<9) )
+		if(HUB_en == 1)
 		{
-			HUB_Enable(HUB_idx);
+			if( (HUB_idx>0) && (HUB_idx<9) )
+			{
+				HUB_Enable(HUB_idx);
+				HUB_flag = 0;
+				Uart_send_feckback();
+			}
+		}
+		else if(HUB_en == 2)
+		{
+			HUB_Disable();
 			HUB_flag = 0;
 			Uart_send_feckback();
 		}

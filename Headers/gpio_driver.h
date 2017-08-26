@@ -4,6 +4,7 @@
 #include "stm32f0xx.h"
 extern void iobus_init(void);
 extern void HUB_Enable(uint8_t n);
+extern void HUB_Disable(void);
 extern void USB_Enable_1_5(uint8_t n);
 extern void USB_Enable_6_10(uint8_t n);
 extern void USB_Enable_11_15(uint8_t n);

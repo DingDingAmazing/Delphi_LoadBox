@@ -441,6 +441,11 @@ void HUB_Enable(uint8_t n)
 	}
 }
 
+void HUB_Disable()
+{
+	iobus_main_board_init();
+}
+
 void USB_Enable_1_5(uint8_t n)
 {
 	switch(n)
