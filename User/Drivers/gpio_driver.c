@@ -345,7 +345,7 @@ void iobus_sub_board03_init()
 	GPIO_ResetBits(GPIOB, USB_HUB3_F_SBO);
 	
 	GPIO_SetBits(GPIOB, SD_HUB3_C_SEL);//SD card 07 be actived, 08-09 be deactived
-	GPIO_SetBits(GPIOA, SD_HUB3_C_SEL);
+	GPIO_SetBits(GPIOA, SD_HUB3_D_SEL);
 }
 
 void iobus_init(void)
@@ -804,11 +804,11 @@ void SD_Enable_7_9(uint8_t n)
 	{
 		case 7:
 			GPIO_SetBits(GPIOB, SD_HUB3_C_SEL);
-			GPIO_SetBits(GPIOA, SD_HUB3_C_SEL);
+			GPIO_SetBits(GPIOA, SD_HUB3_D_SEL);
 			break;
 		case 8:
 			GPIO_SetBits(GPIOB, SD_HUB3_C_SEL);
-			GPIO_ResetBits(GPIOA, SD_HUB3_C_SEL);
+			GPIO_ResetBits(GPIOA, SD_HUB3_D_SEL);
 			break;
 		case 9:
 			GPIO_ResetBits(GPIOB, SD_HUB3_C_SEL);

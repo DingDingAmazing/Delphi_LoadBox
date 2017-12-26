@@ -345,39 +345,39 @@ void SD_CT(uint8_t num)
 	{
 		case 1:
 			HUB_Enable(1);
-			SD_Enable_7_9(7);
+			SD_Enable_7_9(9);
 			break;
 		case 2:
 			HUB_Enable(1);
-			SD_Enable_7_9(8);
+			SD_Enable_7_9(7);
 			break;
 		case 3:
 			HUB_Enable(1);
-			SD_Enable_7_9(9);
+			SD_Enable_7_9(8);
 			break;
 		case 4:
 			HUB_Enable(2);
-			SD_Enable_1_3(1);
+			SD_Enable_1_3(3);
 			break;
 		case 5:
 			HUB_Enable(2);
-			SD_Enable_1_3(2);
+			SD_Enable_1_3(1);
 			break;
 		case 6:
 			HUB_Enable(2);
-			SD_Enable_1_3(3);
+			SD_Enable_1_3(2);
 			break;
 		case 7:
 			HUB_Enable(3);
-			SD_Enable_4_6(4);
+			SD_Enable_4_6(6);
 			break;
 		case 8:
 			HUB_Enable(3);
-			SD_Enable_4_6(5);
+			SD_Enable_4_6(4);
 			break;
 		case 9:
 			HUB_Enable(3);
-			SD_Enable_4_6(6);
+			SD_Enable_4_6(5);
 			break;
 		default:
 			break;

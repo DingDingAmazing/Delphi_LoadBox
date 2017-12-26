@@ -12,7 +12,7 @@ int main(void)
 //	USB_Enable_1_5(1);
 	if(1)
 	{
-		for(n=1;n<31;n++)
+		for(n=1;n<11;n++)
 		{
 			USBCT(n, 1);
 			bsp_mDelay(200);
@@ -20,6 +20,10 @@ int main(void)
 			bsp_mDelay(50);
 		}
 		HUB_Disable();
+		bsp_mDelay(50);
+		USBCT(1, 1);
+		bsp_mDelay(100);
+		SD_CT(1);
 	}
 
 	while(1)
