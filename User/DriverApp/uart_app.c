@@ -224,7 +224,7 @@ void proc_envent2(void)
 	{
 		if( (SD_idx<10) && (SD_idx>0) )
 		{
-			SD_CT(SD_idx);
+			SD_CT(SD_idx,1);
 			SD_flag = 0;
 			Uart_send_feckback();
 		}

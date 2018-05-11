@@ -1,11 +1,10 @@
 #include "main.h"
 
-
-
 int main(void)
 {
 	static uint8_t n;
 	SysTick_Configuration();
+	i2c_pin_init();
 	iobus_init();
 	usart_init();
 //	HUB_Enable(1);

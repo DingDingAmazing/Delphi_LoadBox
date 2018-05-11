@@ -1,5 +1,17 @@
 #include "gpio_driver.h"
 
+/*
+第二次hardware PCB改版，片上脚位变化：
+PB12-----SD_HUB1_C_SEL	->	5V_HUB1_USB1_EN
+PA11-----SD_HUB1_D_SEL	->	5V_HUB1_USB2_EN
+PB8------SD_HUB2_D_SEL	->	5V_HUB2_USB1_EN
+PB9------SD_HUB2_C_SEL	->	5V_HUB2_USB2_EN
+PA1------SD_HUB3_D_SEL	->	5V_HUB3_USB1_EN
+PB10-----USB_HUB3_D_SEL	->	I2C_CLK_SW
+PB11-----SD_HUB3_C_SEL	->	I2C_DAT_SW
+*/
+
+
 #define IOBUS_GPIO_RCC     (RCC_AHBPeriph_GPIOA |RCC_AHBPeriph_GPIOB |RCC_AHBPeriph_GPIOC |RCC_AHBPeriph_GPIOD)
 
 //---------------All control GPIO define---------------//
@@ -59,9 +71,10 @@
 #define USB_HUB1_F_SAO     GPIO_Pin_7     //PC7
 #define USB_HUB1_F_SBI     GPIO_Pin_15    //PB15
 #define USB_HUB1_F_SBO     GPIO_Pin_14    //PB14
-//1to2 SD USB switch
-#define SD_HUB1_C_SEL      GPIO_Pin_12    //PB12
-#define SD_HUB1_D_SEL      GPIO_Pin_11    //PA11
+
+//usb 5V power
+#define HUB1_USB1_5V_EN      GPIO_Pin_12    //PB12
+#define HUB1_USB2_5V_EN      GPIO_Pin_11    //PA11
 
 #define USB_HUB1_C_SEL_HIGH()     GPIO_SetBits(GPIOA, USB_HUB1_C_SEL)
 #define USB_HUB1_C_SEL_LOW()      GPIO_ResetBits(GPIOA, USB_HUB1_C_SEL)
@@ -93,11 +106,11 @@
 #define USB_HUB1_F_SBO_HIGH()     GPIO_SetBits(GPIOB, USB_HUB1_F_SBO)
 #define USB_HUB1_F_SBO_LOW()      GPIO_ResetBits(GPIOB, USB_HUB1_F_SBO)
 
-#define SD_HUB1_C_SEL_HIGH()     GPIO_SetBits(GPIOB, SD_HUB1_C_SEL)
-#define SD_HUB1_C_SEL_LOW()      GPIO_ResetBits(GPIOB, SD_HUB1_C_SEL)
+#define HUB1_USB1_5V_EN_HIGH()     GPIO_SetBits(GPIOB, HUB1_USB1_5V_EN)
+#define HUB1_USB1_5V_EN_LOW()      GPIO_ResetBits(GPIOB, HUB1_USB1_5V_EN)
 
-#define SD_HUB1_D_SEL_HIGH()     GPIO_SetBits(GPIOA, SD_HUB1_D_SEL)
-#define SD_HUB1_D_SEL_LOW()      GPIO_ResetBits(GPIOA, SD_HUB1_D_SEL)
+#define HUB1_USB2_5V_EN_HIGH()     GPIO_SetBits(GPIOA, HUB1_USB2_5V_EN)
+#define HUB1_USB2_5V_EN_LOW()      GPIO_ResetBits(GPIOA, HUB1_USB2_5V_EN)
 
 //-----------------------02 sub board
 //1st 1to2 USB switch
@@ -114,9 +127,9 @@
 #define USB_HUB2_F_SAO     GPIO_Pin_2     //PD2
 #define USB_HUB2_F_SBI     GPIO_Pin_11    //PC11
 #define USB_HUB2_F_SBO     GPIO_Pin_10    //PC10
-//1to2 SD USB switch
-#define SD_HUB2_C_SEL      GPIO_Pin_9     //PB9
-#define SD_HUB2_D_SEL      GPIO_Pin_8     //PB8
+//usb 5v power
+#define HUB2_USB2_5V_EN    GPIO_Pin_9     //PB9
+#define HUB2_USB1_5V_EN    GPIO_Pin_8     //PB8
 
 #define USB_HUB2_C_SEL_HIGH()     GPIO_SetBits(GPIOB, USB_HUB2_C_SEL)
 #define USB_HUB2_C_SEL_LOW()      GPIO_ResetBits(GPIOB, USB_HUB2_C_SEL)
@@ -148,11 +161,11 @@
 #define USB_HUB2_F_SBO_HIGH()     GPIO_SetBits(GPIOC, USB_HUB2_F_SBO)
 #define USB_HUB2_F_SBO_LOW()      GPIO_ResetBits(GPIOC, USB_HUB2_F_SBO)
 
-#define SD_HUB2_C_SEL_HIGH()     GPIO_SetBits(GPIOB, SD_HUB2_C_SEL)
-#define SD_HUB2_C_SEL_LOW()      GPIO_ResetBits(GPIOB, SD_HUB2_C_SEL)
+#define HUB2_USB2_5V_EN_HIGH()     GPIO_SetBits(GPIOB, HUB2_USB2_5V_EN)
+#define HUB2_USB2_5V_EN_LOW()      GPIO_ResetBits(GPIOB, HUB2_USB2_5V_EN)
 
-#define SD_HUB2_D_SEL_HIGH()     GPIO_SetBits(GPIOB, SD_HUB2_D_SEL)
-#define SD_HUB2_D_SEL_LOW()      GPIO_ResetBits(GPIOB, SD_HUB2_D_SEL)
+#define HUB2_USB1_5V_EN_HIGH()     GPIO_SetBits(GPIOB, HUB2_USB1_5V_EN)
+#define HUB2_USB1_5V_EN_LOW()      GPIO_ResetBits(GPIOB, HUB2_USB1_5V_EN)
 
 //-----------------------03 sub board
 //1st 1to2 USB switch
@@ -162,16 +175,17 @@
 #define USB_HUB3_E_SAO     GPIO_Pin_4     //PC4
 #define USB_HUB3_E_SBI     GPIO_Pin_6     //PA6
 #define USB_HUB3_E_SBO     GPIO_Pin_5     //PA5
+
 //2rd 1to2 USB switch
-#define USB_HUB3_D_SEL     GPIO_Pin_10    //PB10
+//Log: USB_HUB3_D_SEL removed
+
 //2rd 1to4 USB switch
 #define USB_HUB3_F_SAI     GPIO_Pin_0     //PB0
 #define USB_HUB3_F_SAO     GPIO_Pin_5     //PC5
 #define USB_HUB3_F_SBI     GPIO_Pin_1     //PB1
 #define USB_HUB3_F_SBO     GPIO_Pin_2     //PB2
-//1to2 SD USB switch
-#define SD_HUB3_C_SEL      GPIO_Pin_11    //PB11
-#define SD_HUB3_D_SEL      GPIO_Pin_1     //PA1
+//usb 5v power
+#define HUB3_USB1_5V_EN    GPIO_Pin_1     //PA1
 
 #define USB_HUB3_C_SEL_HIGH()     GPIO_SetBits(GPIOA, USB_HUB3_C_SEL)
 #define USB_HUB3_C_SEL_LOW()      GPIO_ResetBits(GPIOA, USB_HUB3_C_SEL)
@@ -188,8 +202,7 @@
 #define USB_HUB3_E_SBO_HIGH()     GPIO_SetBits(GPIOA, USB_HUB3_E_SBO)
 #define USB_HUB3_E_SBO_LOW()      GPIO_ResetBits(GPIOA, USB_HUB3_E_SBO)
 
-#define USB_HUB3_D_SEL_HIGH()     GPIO_SetBits(GPIOB, USB_HUB3_D_SEL)
-#define USB_HUB3_D_SEL_LOW()      GPIO_ResetBits(GPIOB, USB_HUB3_D_SEL)
+//Log: USB_HUB3_D_SEL removed
 
 #define USB_HUB3_F_SAI_HIGH()     GPIO_SetBits(GPIOB, USB_HUB3_F_SAI)
 #define USB_HUB3_F_SAI_LOW()      GPIO_ResetBits(GPIOB, USB_HUB3_F_SAI)
@@ -203,11 +216,8 @@
 #define USB_HUB3_F_SBO_HIGH()     GPIO_SetBits(GPIOB, USB_HUB3_F_SBO)
 #define USB_HUB3_F_SBO_LOW()      GPIO_ResetBits(GPIOB, USB_HUB3_F_SBO)
 
-#define SD_HUB3_C_SEL_HIGH()     GPIO_SetBits(GPIOB, SD_HUB3_C_SEL)
-#define SD_HUB3_C_SEL_LOW()      GPIO_ResetBits(GPIOB, SD_HUB3_C_SEL)
-
-#define SD_HUB3_D_SEL_HIGH()     GPIO_SetBits(GPIOA, SD_HUB3_C_SEL)
-#define SD_HUB3_D_SEL_LOW()      GPIO_ResetBits(GPIOA, SD_HUB3_C_SEL)
+#define HUB3_USB1_5V_EN_HIGH()     GPIO_SetBits(GPIOA, HUB3_USB1_5V_EN)
+#define HUB3_USB1_5V_EN_LOW()      GPIO_ResetBits(GPIOA, HUB3_USB1_5V_EN)
 
 
 void test_gpio()
@@ -225,19 +235,19 @@ static void GPIO_Configuration(void)
 {
 	GPIO_InitTypeDef        GPIO_InitStructure;
 	
-	GPIO_InitStructure.GPIO_Pin = B14_SBO | B58_SAI | USB_HUB1_C_SEL | USB_HUB1_E_SBI | USB_HUB1_E_SBO | SD_HUB1_D_SEL |
+	GPIO_InitStructure.GPIO_Pin = B14_SBO | B58_SAI | USB_HUB1_C_SEL | USB_HUB1_E_SBI | USB_HUB1_E_SBO | HUB1_USB2_5V_EN |
                               	USB_HUB2_D_SEL | USB_HUB3_C_SEL | USB_HUB3_E_SAI | USB_HUB3_E_SBI | USB_HUB3_E_SBO |
-                              	SD_HUB3_D_SEL;
+                              	HUB3_USB1_5V_EN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
-	GPIO_InitStructure.GPIO_Pin = USB_HUB1_D_SEL | USB_HUB1_F_SBI | USB_HUB1_F_SBO | SD_HUB1_C_SEL | USB_HUB2_C_SEL | 
-	                              USB_HUB2_E_SAI | USB_HUB2_E_SAO | USB_HUB2_E_SBI | USB_HUB2_E_SBO | SD_HUB2_C_SEL |
-	                              SD_HUB2_D_SEL | USB_HUB3_D_SEL | USB_HUB3_F_SAI | USB_HUB3_F_SBI | USB_HUB3_F_SBO |
-	                              SD_HUB3_C_SEL;
+//Log: USB_HUB3_D_SEL removed
+	GPIO_InitStructure.GPIO_Pin = USB_HUB1_D_SEL | USB_HUB1_F_SBI | USB_HUB1_F_SBO | HUB1_USB1_5V_EN | USB_HUB2_C_SEL | 
+	                              USB_HUB2_E_SAI | USB_HUB2_E_SAO | USB_HUB2_E_SBI | USB_HUB2_E_SBO | HUB2_USB2_5V_EN |
+	                              HUB2_USB1_5V_EN | USB_HUB3_F_SAI | USB_HUB3_F_SBI | USB_HUB3_F_SBO;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	GPIO_InitStructure.GPIO_Pin = USB_A_SEL | B14_SAI | B14_SAO | B14_SBI | B58_SAO | B58_SBI | B58_SBO | USB_HUB1_E_SAI |
@@ -306,10 +316,10 @@ void iobus_sub_board01_init()
 	GPIO_ResetBits(GPIOC, USB_HUB1_F_SAI);//USB 06-09 be deactived
 	GPIO_ResetBits(GPIOC, USB_HUB1_F_SAO);
 	GPIO_SetBits(GPIOB, USB_HUB1_F_SBI);
-	GPIO_ResetBits(GPIOB, USB_HUB1_F_SBO);
-	
-	GPIO_SetBits(GPIOB, SD_HUB1_C_SEL);//SD card 01 be actived, 02-03 be deactived
-	GPIO_SetBits(GPIOA, SD_HUB1_D_SEL);
+	GPIO_ResetBits(GPIOB, USB_HUB1_F_SBO);	
+	//-----------------disable usb 5v-----------------//
+	GPIO_ResetBits(GPIOB, HUB1_USB1_5V_EN);
+	GPIO_ResetBits(GPIOA, HUB1_USB2_5V_EN);
 }
 
 void iobus_sub_board02_init()
@@ -325,9 +335,9 @@ void iobus_sub_board02_init()
 	GPIO_ResetBits(GPIOD, USB_HUB2_F_SAO);
 	GPIO_SetBits(GPIOC, USB_HUB2_F_SBI);
 	GPIO_ResetBits(GPIOC, USB_HUB2_F_SBO);
-	
-	GPIO_SetBits(GPIOB, SD_HUB2_C_SEL);//SD card 04 be actived, 05-06 be deactived
-	GPIO_SetBits(GPIOB, SD_HUB2_D_SEL);
+	//-----------------disable usb 5v-----------------//
+	GPIO_ResetBits(GPIOB, HUB2_USB2_5V_EN);
+	GPIO_ResetBits(GPIOB, HUB2_USB1_5V_EN);
 }
 
 void iobus_sub_board03_init()
@@ -338,14 +348,16 @@ void iobus_sub_board03_init()
 	GPIO_SetBits(GPIOA, USB_HUB3_E_SBI);
 	GPIO_ResetBits(GPIOA, USB_HUB3_E_SBO);
 	
-	GPIO_SetBits(GPIOB, USB_HUB3_D_SEL);//2st 1to4 chip be choosed, USB 30 be deactived
+//2st 1to4 chip be choosed, USB 30 be deactived
+//需要变更I2C方式USB_HUB3_D_SEL高有效
+	USB_HUB3_D_SEL_EN(1);
 	GPIO_ResetBits(GPIOB, USB_HUB3_F_SAI);//USB 26-29 be deactived
 	GPIO_ResetBits(GPIOC, USB_HUB3_F_SAO);
 	GPIO_SetBits(GPIOB, USB_HUB3_F_SBI);
 	GPIO_ResetBits(GPIOB, USB_HUB3_F_SBO);
-	
-	GPIO_SetBits(GPIOB, SD_HUB3_C_SEL);//SD card 07 be actived, 08-09 be deactived
-	GPIO_SetBits(GPIOA, SD_HUB3_D_SEL);
+	//-----------------disable usb 5v-----------------//
+//此处添加一个5v控制
+	GPIO_ResetBits(GPIOA, HUB3_USB1_5V_EN);
 }
 
 void iobus_init(void)
@@ -356,6 +368,11 @@ void iobus_init(void)
 	iobus_sub_board01_init();
 	iobus_sub_board02_init();
 	iobus_sub_board03_init();
+	HUB1_USB1_5V_EN_LOW();
+	HUB1_USB2_5V_EN_LOW();
+	HUB2_USB1_5V_EN_LOW();
+	HUB2_USB2_5V_EN_LOW();
+	HUB3_USB1_5V_EN_LOW();
 }
 
 void HUB_Half_01_deactive()
@@ -711,35 +728,44 @@ void USB_Enable_26_30(uint8_t n)
 	switch(n)
 	{
 		case 28:
-			GPIO_SetBits(GPIOB, USB_HUB3_D_SEL);//2st 1to4 chip be choosed, USB 30 be deactived
+//2st 1to4 chip be choosed, USB 30 be deactived
+//需要变更I2C方式USB_HUB3_D_SEL高有效
+			USB_HUB3_D_SEL_EN(1);
 			GPIO_SetBits(GPIOB, USB_HUB3_F_SAI);
 			GPIO_ResetBits(GPIOC, USB_HUB3_F_SAO);
 			GPIO_SetBits(GPIOB, USB_HUB3_F_SBI);
 			GPIO_SetBits(GPIOB, USB_HUB3_F_SBO);
 			break;
 		case 29:
-			GPIO_SetBits(GPIOB, USB_HUB3_D_SEL);//2st 1to4 chip be choosed, USB 30 be deactived
+//2st 1to4 chip be choosed, USB 30 be deactived
+//需要变更I2C方式USB_HUB3_D_SEL高有效
+			USB_HUB3_D_SEL_EN(1);
 			GPIO_SetBits(GPIOB, USB_HUB3_F_SAI);
 			GPIO_SetBits(GPIOC, USB_HUB3_F_SAO);
 			GPIO_SetBits(GPIOB, USB_HUB3_F_SBI);
 			GPIO_ResetBits(GPIOB, USB_HUB3_F_SBO);
 			break;
 		case 27:
-			GPIO_SetBits(GPIOB, USB_HUB3_D_SEL);//2st 1to4 chip be choosed, USB 30 be deactived
+//2st 1to4 chip be choosed, USB 30 be deactived
+//需要变更I2C方式USB_HUB3_D_SEL高有效
+			USB_HUB3_D_SEL_EN(1);
 			GPIO_ResetBits(GPIOB, USB_HUB3_F_SAI);
 			GPIO_SetBits(GPIOC, USB_HUB3_F_SAO);
 			GPIO_ResetBits(GPIOB, USB_HUB3_F_SBI);
 			GPIO_ResetBits(GPIOB, USB_HUB3_F_SBO);
 			break;
 		case 26:
-			GPIO_SetBits(GPIOB, USB_HUB3_D_SEL);//2st 1to4 chip be choosed, USB 30 be deactived
+//2st 1to4 chip be choosed, USB 30 be deactived
+//需要变更I2C方式USB_HUB3_D_SEL高有效
+			USB_HUB3_D_SEL_EN(1);
 			GPIO_ResetBits(GPIOB, USB_HUB3_F_SAI);
 			GPIO_SetBits(GPIOC, USB_HUB3_F_SAO);
 			GPIO_ResetBits(GPIOB, USB_HUB3_F_SBI);
 			GPIO_SetBits(GPIOB, USB_HUB3_F_SBO);
 			break;
 		case 30:
-			GPIO_ResetBits(GPIOB, USB_HUB3_D_SEL);
+//需要变更I2C方式USB_HUB3_D_SEL低有效
+			USB_HUB3_D_SEL_EN(0);
 			GPIO_ResetBits(GPIOB, USB_HUB3_F_SAI);
 			GPIO_ResetBits(GPIOC, USB_HUB3_F_SAO);
 			GPIO_SetBits(GPIOB, USB_HUB3_F_SBI);
@@ -751,67 +777,64 @@ void USB_Enable_26_30(uint8_t n)
 }
 void USB_Disable_26_30(void)
 {
-	GPIO_SetBits(GPIOB, USB_HUB3_D_SEL);//2st 1to4 chip be choosed, USB 30 be deactived
+//2st 1to4 chip be choosed, USB 30 be deactived
+//需要变更I2C方式USB_HUB3_D_SEL高有效
+	USB_HUB3_D_SEL_EN(1);
 	GPIO_ResetBits(GPIOB, USB_HUB3_F_SAI);//USB 26-29 be deactived
 	GPIO_ResetBits(GPIOC, USB_HUB3_F_SAO);
 	GPIO_SetBits(GPIOB, USB_HUB3_F_SBI);
 	GPIO_ResetBits(GPIOB, USB_HUB3_F_SBO);
 }
 
-void SD_Enable_1_3(uint8_t n)
+/*
+|type|board num|item|para |
+|----|---------|----|-----|
+|5v  |1        |usb1|(0,x)|
+|5v  |1        |usb2|(1,x)|
+|5v  |2        |usb1|(2,x)|
+|5v  |2        |usb2|(3,x)|
+|5v  |3        |usb1|(4,x)|
+|5v  |3        |usb2|(5,x)|
+*/
+void USB_5V_CT(uint8_t num, uint8_t en)
 {
-	switch(n)
+	switch(num)
 	{
+		case 0:
+			if(en == 0)
+				HUB3_USB1_5V_EN_LOW();
+			else
+			{
+				
+				HUB3_USB1_5V_EN_HIGH();
+			}
+			break;
 		case 1:
-			GPIO_SetBits(GPIOB, SD_HUB1_C_SEL);
-			GPIO_SetBits(GPIOA, SD_HUB1_D_SEL);
+			HUB3_USB2_5V_Set(en);
 			break;
 		case 2:
-			GPIO_SetBits(GPIOB, SD_HUB1_C_SEL);
-			GPIO_ResetBits(GPIOA, SD_HUB1_D_SEL);
+			if(en == 0)
+				HUB1_USB1_5V_EN_LOW();
+			else
+				HUB1_USB1_5V_EN_HIGH();
 			break;
 		case 3:
-			GPIO_ResetBits(GPIOB, SD_HUB1_C_SEL);
+			if(en == 0)
+				HUB1_USB2_5V_EN_LOW();
+			else
+				HUB1_USB2_5V_EN_HIGH();
 			break;
-		default:
-			break;
-	}
-}
-
-void SD_Enable_4_6(uint8_t n)
-{
-	switch(n)
-	{
 		case 4:
-			GPIO_SetBits(GPIOB, SD_HUB2_C_SEL);
-			GPIO_SetBits(GPIOB, SD_HUB2_D_SEL);
+			if(en == 0)
+				HUB2_USB1_5V_EN_LOW();
+			else
+				HUB2_USB1_5V_EN_HIGH();
 			break;
 		case 5:
-			GPIO_SetBits(GPIOB, SD_HUB2_C_SEL);
-			GPIO_ResetBits(GPIOB, SD_HUB2_D_SEL);
-			break;
-		case 6:
-			GPIO_ResetBits(GPIOB, SD_HUB2_C_SEL);
-			break;
-		default:
-			break;
-	}
-}
-
-void SD_Enable_7_9(uint8_t n)
-{
-	switch(n)
-	{
-		case 7:
-			GPIO_SetBits(GPIOB, SD_HUB3_C_SEL);
-			GPIO_SetBits(GPIOA, SD_HUB3_D_SEL);
-			break;
-		case 8:
-			GPIO_SetBits(GPIOB, SD_HUB3_C_SEL);
-			GPIO_ResetBits(GPIOA, SD_HUB3_D_SEL);
-			break;
-		case 9:
-			GPIO_ResetBits(GPIOB, SD_HUB3_C_SEL);
+			if(en == 0)
+				HUB2_USB2_5V_EN_LOW();
+			else
+				HUB2_USB2_5V_EN_HIGH();
 			break;
 		default:
 			break;
