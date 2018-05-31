@@ -65,5 +65,5 @@ extern void i2c_pin_init(void);
 extern void Aux_Switch(uint8_t num, uint8_t en);
 extern void LAMP_Switch(int8_t num, int8_t en);
 extern void HUB3_USB2_5V_Set(int8_t en);
-	
+extern void Uart_send_feckback(void);	
 #endif

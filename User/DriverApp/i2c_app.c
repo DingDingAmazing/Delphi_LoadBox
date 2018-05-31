@@ -156,7 +156,7 @@ void PCA9535_IO_out(uint8_t device_index, uint8_t port_x)
 //用打印输出
 void i2c_error(void)
 {
-	
+	Uart_send_feckback();
 }
 
 void i2c_pin_set(uint16_t idx)
@@ -296,12 +296,12 @@ void Aux_Switch(uint8_t num, uint8_t en)
 |5v  |2        |usb2|(3,x)|
 |5v  |3        |usb1|(4,x)|
 |5v  |3        |usb2|(5,x)|
-|5v  |1        |aux1|(6,x)|
-|5v  |2        |aux2|(7,x)|
-|5v  |3        |aux3|(8,x)|
-|5v  |1        |sd1|(9,x)|
-|5v  |2        |sd2|(10,x)|
-|5v  |3        |sd3|(11,x)|
+|aux |1        |aux1|(6,x)|
+|aux |2        |aux2|(7,x)|
+|aux |3        |aux3|(8,x)|
+|sd  |1        |sd1|(9,x)|
+|sd  |2        |sd2|(10,x)|
+|sd  |3        |sd3|(11,x)|
 */
 void LAMP_Switch(int8_t num, int8_t en)
 {

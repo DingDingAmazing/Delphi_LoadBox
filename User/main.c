@@ -9,6 +9,7 @@ int main(void)
 	usart_init();
 //	HUB_Enable(1);
 //	USB_Enable_1_5(1);
+	
 	if(1)
 	{
 		for(n=1;n<31;n++)

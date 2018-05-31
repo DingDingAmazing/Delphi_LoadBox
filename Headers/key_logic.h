@@ -14,4 +14,8 @@ extern uint8_t SD_flag;
 extern uint8_t HUB_idx;
 extern uint8_t HUB_en;
 extern uint8_t HUB_flag;
+extern uint8_t SD_en;
+extern uint8_t AUX_idx;
+extern uint8_t AUX_en;
+extern uint8_t AUX_flag;
 #endif

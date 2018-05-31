@@ -174,6 +174,14 @@ void Uart2FrameOperate(void)
 					
 				case 0xf201:
 					SD_idx = gUart2Frame.DataBuf[0];
+					SD_en = 1;
+					if(SD_flag == 0)
+						SD_flag = 1;
+						break;
+					
+				case 0xf202:
+					SD_idx = gUart2Frame.DataBuf[0];
+					SD_en = 0;
 					if(SD_flag == 0)
 						SD_flag = 1;
 						break;
@@ -189,6 +197,20 @@ void Uart2FrameOperate(void)
 					HUB_en = 2;//disable all hubs
 					if(HUB_flag == 0)
 						HUB_flag = 1;
+						break;
+					
+				case 0xf401:
+					AUX_idx = gUart2Frame.DataBuf[0];
+					AUX_en = 1;
+					if(AUX_flag == 0)
+						AUX_flag = 1;
+						break;
+					
+				case 0xf402:
+					AUX_idx = gUart2Frame.DataBuf[0];
+					AUX_en = 0;
+					if(AUX_flag == 0)
+						AUX_flag = 1;
 						break;
 					
         default:
@@ -222,15 +244,27 @@ void proc_envent2(void)
 {
 	if(SD_flag==1)
 	{
-		if( (SD_idx<10) && (SD_idx>0) )
+		if( (SD_idx<4) && (SD_idx>0) )
 		{
-			SD_CT(SD_idx,1);
+			SD_CT(SD_idx,SD_en);
 			SD_flag = 0;
 			Uart_send_feckback();
 		}
 	}
 }
 
+void proc_envent4(void)
+{
+	if(AUX_flag==1)
+	{
+		if( (AUX_idx<4) && (AUX_idx>0) )
+		{
+			Aux_Switch(AUX_idx,AUX_en);
+			AUX_flag = 0;
+			Uart_send_feckback();
+		}
+	}
+}
 
 void proc_envent3(void)
 {
@@ -259,6 +293,7 @@ void EnventHandle(void)
 {
 	proc_envent1();
 	proc_envent2();
+	proc_envent4();
 	proc_envent3();
 }
 

@@ -588,6 +588,7 @@ void USBCT(uint8_t num, uint8_t en)
 	}
 }
 
+//调试时考虑加入关闭其他2路sd
 void SD_CT(uint8_t num, uint8_t en)
 {
 	switch(num)
@@ -608,3 +609,6 @@ void SD_CT(uint8_t num, uint8_t en)
 			break;
 	}
 }
+
+//调试时考虑加入关闭其他2路aux
+//调试时考虑加入lamp
