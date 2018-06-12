@@ -4,7 +4,7 @@
 #include "i2c_driver.h"
 
 #define PCA9535_1st_Address ((uint8_t)(0x20<<1))
-#define PCA9535_2nd_Address ((uint8_t)(0x23<<1))
+#define PCA9535_2nd_Address ((uint8_t)(0x24<<1))
 #define I2C_TimeOut         ((uint32_t)0x1000)
 
 #define Make_PCA_IO(group, offset) (uint16_t)((uint16_t)(group<<8) + (uint16_t)(1<<offset))
@@ -50,11 +50,20 @@ typedef enum
 
 typedef struct
 {
-	uint8_t one_out_p0_p1[2];
-	uint8_t one_out_p1_p0[2];
-	uint8_t two_out_p0_p1[2];
-	uint8_t two_out_p1_p0[2];
+	uint8_t device_1st[2];
+	uint8_t device_2nd[2];
 }I2C_output_register;
+
+typedef struct
+{
+	uint8_t hub_on_idx;
+	uint8_t usb_on_group1;
+	uint8_t usb_on_group2;
+	uint8_t usb1_on_idx;
+	uint8_t usb2_on_idx;
+	uint8_t aux_on_idx;
+	uint8_t sd_on_idx;
+}flag_control_on;
 
 extern void i2c_error(void);
 extern void USB_HUB3_D_SEL_EN(uint8_t key);
@@ -65,5 +74,7 @@ extern void i2c_pin_init(void);
 extern void Aux_Switch(uint8_t num, uint8_t en);
 extern void LAMP_Switch(int8_t num, int8_t en);
 extern void HUB3_USB2_5V_Set(int8_t en);
-extern void Uart_send_feckback(void);	
+extern void Uart_send_feckback(void);
+extern void uart_send_word(char *n);
+extern flag_control_on flag_on_record;
 #endif

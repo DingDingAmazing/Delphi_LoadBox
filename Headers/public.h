@@ -30,6 +30,9 @@ typedef struct
 #define FALSE  0
 #define TRUE   (!FALSE)
 
+#define on bool(0)
+
+
 extern void bsp_uDelay (const uint32_t usec);
 extern void bsp_mDelay (const uint32_t msec);
 extern void tmr_start(tmr_t *tmr,const tmr_ticks_t delay_in_ticks);

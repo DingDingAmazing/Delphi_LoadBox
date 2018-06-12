@@ -21,6 +21,14 @@ void Uart_send_feckback(void)
 	
 	rt_serial_write(&Data_Temp, 2); 
 }
+
+void uart_send_word(char *n)
+{
+	uint8_t len1;
+//	len1 = sizeof(n);
+	len1 = strlen(n);
+	rt_serial_write(n, len1);
+}
 /*************************************************************************************/
 
 
@@ -54,7 +62,7 @@ void UartFrameHandle(void)
       switch(gUart2Deal.Step)
       {
 				case 0:
-        if(Data == 0x55)		
+        if(Data == 0x56)		
         {
           gUart2Deal.Step++;
           PackLen  = 0;
@@ -194,7 +202,7 @@ void Uart2FrameOperate(void)
 						break;
 					
 				case 0xf302:
-					HUB_en = 2;//disable all hubs
+					HUB_en = 0;//disable all hubs
 					if(HUB_flag == 0)
 						HUB_flag = 1;
 						break;
@@ -224,19 +232,14 @@ void Uart2FrameOperate(void)
 
 
 /*************************************************************************************/
-//
-
 
 void proc_envent1(void)
-{
-	if(USB_flag==1)
+{	
+	if((USB_idx>0) && (USB_idx<31))
 	{
-		if((USB_idx>0) && (USB_idx<31))
-		{
-			USBCT(USB_idx, USB_en);
-			USB_flag = 0;
-			Uart_send_feckback();
-		}
+		USBCT(USB_idx, USB_en);
+		USB_flag = 0;
+		Uart_send_feckback();
 	}
 }
 
@@ -268,22 +271,98 @@ void proc_envent4(void)
 
 void proc_envent3(void)
 {
-	if(HUB_flag==1)
+	if(HUB_en == 1)
 	{
-		if(HUB_en == 1)
+		HUB_flag = 0;
+		Uart_send_feckback();
+	}
+	else
+	{
+		HUB_Disable();
+		HUB_flag = 0;
+		Uart_send_feckback();
+	}
+}
+
+void hub_handle(uint8_t hub_i)
+{
+	if(hub_i != flag_on_record.hub_on_idx)
+	{
+		if(hub_i == 255)
 		{
-			if( (HUB_idx>0) && (HUB_idx<9) )
-			{
-				HUB_Enable(HUB_idx);
-				HUB_flag = 0;
-				Uart_send_feckback();
-			}
+			HUB_Enable(hub_i);
 		}
-		else if(HUB_en == 2)
+		else
 		{
-			HUB_Disable();
-			HUB_flag = 0;
-			Uart_send_feckback();
+			if(flag_on_record.usb1_on_idx != 255)
+			{
+				usb_disable(flag_on_record.usb1_on_idx);//disconnect usb1 signal first
+				bsp_mDelay(20);
+				usb_5v_onoff(flag_on_record.usb1_on_idx, 0);//then disconnect usb1 power
+				bsp_mDelay(20);
+				flag_on_record.usb1_on_idx = 255;
+				flag_on_record.usb_on_group1 = 255;
+			}
+			if(flag_on_record.usb2_on_idx != 255)
+			{
+				usb_disable(flag_on_record.usb2_on_idx);//disconnect usb2 signal first
+				bsp_mDelay(20);
+				usb_5v_onoff(flag_on_record.usb2_on_idx, 0);//then disconnect usb1 power
+				bsp_mDelay(20);
+				flag_on_record.usb2_on_idx = 255;
+				flag_on_record.usb_on_group2 = 255;
+			}
+			if(flag_on_record.aux_on_idx != 255)
+			{
+				Aux_Switch(flag_on_record.aux_on_idx, 0);
+			}
+			if(flag_on_record.sd_on_idx != 255)
+			{
+				SD_CT(flag_on_record.sd_on_idx, 0);
+			}
+			
+			HUB_Enable(hub_i);
+		}
+	}
+}
+
+void proc_handle(void)
+{
+	uint8_t hub_i;//now-hub
+	if(USB_flag)
+	{
+		if(USB_en)
+		{
+			hub_i = (USB_idx-1)/10 + 1;
+			hub_handle(hub_i);
+		}
+		proc_envent1();
+	}
+	else if(AUX_flag)
+	{
+		if(AUX_en)
+		{
+			hub_handle(AUX_idx);
+		}
+		proc_envent4();
+	}
+	else if(SD_flag)
+	{
+		if(SD_en)
+		{
+			hub_handle(SD_idx);
+		}
+		proc_envent2();
+	}
+	else if(HUB_flag)
+	{
+		if(HUB_en)
+		{
+			hub_handle(HUB_idx);
+		}
+		else
+		{
+			proc_envent3();
 		}
 	}
 }
@@ -291,10 +370,10 @@ void proc_envent3(void)
 
 void EnventHandle(void)
 {
-	proc_envent1();
-	proc_envent2();
-	proc_envent4();
-	proc_envent3();
+	if(USB_flag || AUX_flag || SD_flag || HUB_flag)
+	{
+		proc_handle();
+	}
 }
 
 //for test

@@ -4,23 +4,25 @@ int main(void)
 {
 	static uint8_t n;
 	SysTick_Configuration();
+	usart_init();
+	bsp_mDelay(500);
+	uart_send_word("\r\nusart is ok");
+	bsp_mDelay(100);
 	i2c_pin_init();
 	iobus_init();
-	usart_init();
-//	HUB_Enable(1);
-//	USB_Enable_1_5(1);
 	
 	if(1)
 	{
-		for(n=1;n<31;n++)
+		for(n=1;n<11;n++)
 		{
 			USBCT(n, 1);
 			bsp_mDelay(200);
 			USBCT(n, 0);
-			bsp_mDelay(50);
+			bsp_mDelay(200);
 		}
 		HUB_Disable();
 	}
+	
 
 	while(1)
 	{

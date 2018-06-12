@@ -20,6 +20,7 @@ extern void Uart2FrameOperate(void);
 extern void EnventHandle(void);
 extern void setTestTimer1(void);
 extern void timerUsartTest(void);
+extern void uart_send_word(char *n);
 /******************************************************/
 
 

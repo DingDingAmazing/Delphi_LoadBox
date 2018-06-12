@@ -6,15 +6,15 @@ void SysTick_Configuration(void)
 }
 
 
-uint8_t USB_idx;
-uint8_t USB_en;
-uint8_t USB_flag;
-uint8_t SD_idx;
-uint8_t SD_flag;
-uint8_t HUB_idx;
-uint8_t HUB_en=0;
-uint8_t HUB_flag;
-uint8_t SD_en;
-uint8_t AUX_idx;
-uint8_t AUX_en;
-uint8_t AUX_flag;
+uint8_t USB_idx = 0;
+uint8_t USB_en = 0;
+uint8_t USB_flag = 0;
+uint8_t SD_idx = 0;
+uint8_t SD_flag = 0;
+uint8_t HUB_idx = 0;
+uint8_t HUB_en = 0;
+uint8_t HUB_flag = 0;
+uint8_t SD_en = 0;
+uint8_t AUX_idx = 0;
+uint8_t AUX_en = 0;
+uint8_t AUX_flag = 0;

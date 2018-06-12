@@ -1,5 +1,5 @@
 #include "gpio_driver.h"
-
+ 
 /*
 第二次hardware PCB改版，片上脚位变化：
 PB12-----SD_HUB1_C_SEL	->	5V_HUB1_USB1_EN
@@ -403,6 +403,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_ResetBits(GPIOC, B14_SAO);
 			GPIO_SetBits(GPIOC, B14_SBI);
 			GPIO_SetBits(GPIOA, B14_SBO);
+			flag_on_record.hub_on_idx = 2;
 			break;
 		case 1:
 			HUB_Half_02_deactive();
@@ -410,6 +411,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_SetBits(GPIOC, B14_SAO);
 			GPIO_SetBits(GPIOC, B14_SBI);
 			GPIO_ResetBits(GPIOA, B14_SBO);
+			flag_on_record.hub_on_idx = 1;
 			break;
 		case 3:
 			HUB_Half_02_deactive();
@@ -417,6 +419,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_SetBits(GPIOC, B14_SAO);
 			GPIO_ResetBits(GPIOC, B14_SBI);
 			GPIO_ResetBits(GPIOA, B14_SBO);
+			flag_on_record.hub_on_idx = 3;
 		break;
 		case 4:
 			HUB_Half_02_deactive();
@@ -424,6 +427,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_SetBits(GPIOC, B14_SAO);
 			GPIO_ResetBits(GPIOC, B14_SBI);
 			GPIO_SetBits(GPIOA, B14_SBO);
+			flag_on_record.hub_on_idx = 4;
 			break;
 		case 8:
 			HUB_Half_01_deactive();
@@ -431,6 +435,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_ResetBits(GPIOC, B58_SAO);
 			GPIO_SetBits(GPIOC, B58_SBI);
 			GPIO_SetBits(GPIOC, B58_SBO);
+			flag_on_record.hub_on_idx = 8;
 			break;
 		case 7:
 			HUB_Half_01_deactive();
@@ -438,6 +443,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_SetBits(GPIOC, B58_SAO);
 			GPIO_SetBits(GPIOC, B58_SBI);
 			GPIO_ResetBits(GPIOC, B58_SBO);
+			flag_on_record.hub_on_idx = 7;
 			break;
 		case 5:
 			HUB_Half_01_deactive();
@@ -445,6 +451,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_SetBits(GPIOC, B58_SAO);
 			GPIO_ResetBits(GPIOC, B58_SBI);
 			GPIO_ResetBits(GPIOC, B58_SBO);
+			flag_on_record.hub_on_idx = 5;
 			break;
 		case 6:
 			HUB_Half_01_deactive();
@@ -452,6 +459,7 @@ void HUB_Enable(uint8_t n)
 			GPIO_SetBits(GPIOC, B58_SAO);
 			GPIO_ResetBits(GPIOC, B58_SBI);
 			GPIO_SetBits(GPIOC, B58_SBO);
+			flag_on_record.hub_on_idx = 6;
 			break;
 		default:
 			break;
@@ -461,6 +469,7 @@ void HUB_Enable(uint8_t n)
 void HUB_Disable()
 {
 	iobus_main_board_init();
+	flag_on_record.hub_on_idx = 255;
 }
 
 void USB_Enable_1_5(uint8_t n)
@@ -506,6 +515,7 @@ void USB_Enable_1_5(uint8_t n)
 			break;
 	}
 }
+
 void USB_Disable_1_5(void)
 {
 	GPIO_SetBits(GPIOA, USB_HUB1_C_SEL);//1st 1to4 chip be choosed, USB 05 be deactived
@@ -515,6 +525,9 @@ void USB_Disable_1_5(void)
 	GPIO_ResetBits(GPIOA, USB_HUB1_E_SBO);
 }
 
+/**
+	idx on schem
+**/
 void USB_Enable_6_10(uint8_t n)
 {
 	switch(n)
@@ -558,6 +571,10 @@ void USB_Enable_6_10(uint8_t n)
 			break;
 	}
 }
+
+/**
+	idx on schem
+**/
 void USB_Disable_6_10(void)
 {
 	GPIO_SetBits(GPIOB, USB_HUB1_D_SEL);//2st 1to4 chip be choosed, USB 10 be deactived
@@ -567,6 +584,9 @@ void USB_Disable_6_10(void)
 	GPIO_ResetBits(GPIOB, USB_HUB1_F_SBO);
 }
 
+/**
+	idx on schem
+**/
 void USB_Enable_11_15(uint8_t n)
 {
 	switch(n)
@@ -610,6 +630,10 @@ void USB_Enable_11_15(uint8_t n)
 			break;
 	}
 }
+
+/**
+	idx on schem
+**/
 void USB_Disable_11_15(void)
 {
 	GPIO_SetBits(GPIOB, USB_HUB2_C_SEL);//1st 1to4 chip be choosed, USB 15 be deactived
@@ -619,6 +643,9 @@ void USB_Disable_11_15(void)
 	GPIO_ResetBits(GPIOB, USB_HUB2_E_SBO);
 }
 
+/**
+	idx on schem
+**/
 void USB_Enable_16_20(uint8_t n)
 {
 	switch(n)
@@ -662,6 +689,10 @@ void USB_Enable_16_20(uint8_t n)
 			break;
 	}
 }
+
+/**
+	idx on schem
+**/
 void USB_Disable_16_20(void)
 {
 	GPIO_SetBits(GPIOA, USB_HUB2_D_SEL);//2st 1to4 chip be choosed, USB 20 be deactived
@@ -671,6 +702,9 @@ void USB_Disable_16_20(void)
 	GPIO_ResetBits(GPIOC, USB_HUB2_F_SBO);
 }
 
+/**
+	idx on schem
+**/
 void USB_Enable_21_25(uint8_t n)
 {
 	switch(n)
@@ -714,6 +748,10 @@ void USB_Enable_21_25(uint8_t n)
 			break;
 	}
 }
+
+/**
+	idx on schem
+**/
 void USB_Disable_21_25(void)
 {
 	GPIO_SetBits(GPIOA, USB_HUB3_C_SEL);//1st 1to4 chip be choosed, USB 25 be deactived
@@ -723,6 +761,9 @@ void USB_Disable_21_25(void)
 	GPIO_ResetBits(GPIOA, USB_HUB3_E_SBO);
 }
 
+/**
+	idx on schem
+**/
 void USB_Enable_26_30(uint8_t n)
 {
 	switch(n)
@@ -775,6 +816,10 @@ void USB_Enable_26_30(uint8_t n)
 			break;
 	}
 }
+
+/**
+	idx on schem
+**/
 void USB_Disable_26_30(void)
 {
 //2st 1to4 chip be choosed, USB 30 be deactived
@@ -784,6 +829,172 @@ void USB_Disable_26_30(void)
 	GPIO_ResetBits(GPIOC, USB_HUB3_F_SAO);
 	GPIO_SetBits(GPIOB, USB_HUB3_F_SBI);
 	GPIO_ResetBits(GPIOB, USB_HUB3_F_SBO);
+}
+
+/**
+|type |board num|item |para |function             |
+|-----|---------|---- |-----|---------------------|
+|usb  |1        |usb1 |(1)  |USB_Enable_21_25(21) |
+|usb  |1        |usb2 |(2)  |USB_Enable_21_25(22) |
+|usb  |1        |usb3 |(3)  |USB_Enable_21_25(23) |
+|usb  |1        |usb4 |(4)  |USB_Enable_21_25(24) |
+|usb  |1        |usb5 |(5)  |USB_Enable_21_25(25) |
+
+|usb  |1        |usb6 |(6)  |USB_Enable_26_30(26) |
+|usb  |1        |usb7 |(7)  |USB_Enable_26_30(27) |
+|usb  |1        |usb8 |(8)  |USB_Enable_26_30(28) |
+|usb  |1        |usb9 |(9)  |USB_Enable_26_30(29) |
+|usb  |1        |usb10|(10) |USB_Enable_26_30(30) |
+
+|usb  |2        |usb11|(11) |USB_Enable_1_5(1)    |
+|usb  |2        |usb12|(12) |USB_Enable_1_5(2)    |
+|usb  |2        |usb13|(13) |USB_Enable_1_5(3)    |
+|usb  |2        |usb14|(14) |USB_Enable_1_5(4)    |
+|usb  |2        |usb15|(15) |USB_Enable_1_5(5)    |
+
+|usb  |2        |usb16|(16) |USB_Enable_6_10(6)   |
+|usb  |2        |usb17|(17) |USB_Enable_6_10(7)   |
+|usb  |2        |usb18|(18) |USB_Enable_6_10(8)   |
+|usb  |2        |usb19|(19) |USB_Enable_6_10(9)   |
+|usb  |2        |usb20|(20) |USB_Enable_6_10(10)  |
+
+|usb  |3        |usb21|(21) |USB_Enable_11_15(11) |
+|usb  |3        |usb22|(22) |USB_Enable_11_15(12) |
+|usb  |3        |usb23|(23) |USB_Enable_11_15(13) |
+|usb  |3        |usb24|(24) |USB_Enable_11_15(14) |
+|usb  |3        |usb25|(25) |USB_Enable_11_15(15) |
+
+|usb  |3        |usb26|(26) |USB_Enable_16_20(16) |
+|usb  |3        |usb27|(27) |USB_Enable_16_20(17) |
+|usb  |3        |usb28|(28) |USB_Enable_16_20(18) |
+|usb  |3        |usb29|(29) |USB_Enable_16_20(19) |
+|usb  |3        |usb30|(30) |USB_Enable_16_20(20) |
+**/
+void usb_data_on(uint8_t n)
+{
+	uint8_t i = (n-1)/5 + 1;//usb group
+	switch(i)
+	{
+		case 1:
+			USB_Enable_21_25(20 + n);
+			break;
+		case 2:
+			USB_Enable_26_30(20 + n);
+			break;
+		case 3:
+			USB_Enable_1_5(n - 10);
+			break;
+		case 4:
+			USB_Enable_6_10(n - 10);
+			break;
+		case 5:
+			USB_Enable_11_15(n - 10);
+			break;
+		case 6:
+			USB_Enable_16_20(n - 10);
+			break;
+		default:
+			break;
+	}
+	if(i%2)
+	{
+		flag_on_record.usb1_on_idx = n;
+		flag_on_record.usb_on_group1 = i;
+	}
+	else
+	{
+		flag_on_record.usb2_on_idx = n;
+		flag_on_record.usb_on_group2 = i;
+	}
+}
+
+void usb_enable(uint8_t n)
+{
+	uint8_t hub_i = (n-1)/10 + 1;//now-hub
+	uint8_t group_i = (n-1)/5 + 1;//now-usb group
+	if(hub_i == flag_on_record.hub_on_idx)
+	{
+		if(group_i == flag_on_record.usb_on_group1)
+		{
+			if(n != flag_on_record.usb1_on_idx)
+			{
+				usb_disable(flag_on_record.usb1_on_idx);//disconnect usb1 signal first
+				bsp_mDelay(20);
+				usb_5v_onoff(flag_on_record.usb1_on_idx, 0);//then disconnect usb1 power
+				bsp_mDelay(20);
+				
+				usb_5v_onoff(n, 1);//connect power first
+				bsp_mDelay(20);
+				usb_data_on(n);//then connect signal
+			}
+		}
+		else if(group_i == flag_on_record.usb_on_group2)
+		{
+			if(n != flag_on_record.usb2_on_idx)
+			{
+				usb_disable(flag_on_record.usb2_on_idx);//disconnect usb2 signal first
+				bsp_mDelay(20);
+				usb_5v_onoff(flag_on_record.usb2_on_idx, 0);//then disconnect usb1 power
+				bsp_mDelay(20);
+				
+				usb_5v_onoff(n, 1);//connect power first
+				bsp_mDelay(20);
+				usb_data_on(n);//then connect signal
+			}
+		}
+		else
+		{
+			usb_5v_onoff(n, 1);//connect power first
+			bsp_mDelay(20);
+			usb_data_on(n);//then connect signal
+		}
+	}
+	
+	else
+	{
+		usb_5v_onoff(n, 1);//connect power first
+		bsp_mDelay(20);
+		usb_data_on(n);
+	}
+}
+
+
+/**
+|type       |board num|item    |para |function             |
+|-----------|---------|--------|-----|---------------------|
+|usb_group  |1        |usb1-5  |(1)  |USB_Disable_21_25()  |
+|usb_group  |1        |usb6-10 |(2)  |USB_Disable_26_30()  |
+|usb_group  |2        |usb11-15|(3)  |USB_Disable_1_5()    |
+|usb_group  |2        |usb16-20|(4)  |USB_Disable_6_10()   |
+|usb_group  |3        |usb21-25|(5)  |USB_Disable_11_15()  |
+|usb_group  |3        |usb26-30|(6)  |USB_Disable_16_20()  |
+**/
+void usb_disable(uint8_t n)
+{
+	uint8_t i = (n-1)/5 + 1;
+	switch(i)
+	{
+		case 1:
+			USB_Disable_21_25();
+			break;
+		case 2:
+			USB_Disable_26_30();
+			break;
+		case 3:
+			USB_Disable_1_5();
+			break;
+		case 4:
+			USB_Disable_6_10();
+			break;
+		case 5:
+			USB_Disable_11_15();
+			break;
+		case 6:
+			USB_Disable_16_20();
+			break;
+		default:
+			break;
+	}
 }
 
 /*
@@ -804,10 +1015,7 @@ void USB_5V_CT(uint8_t num, uint8_t en)
 			if(en == 0)
 				HUB3_USB1_5V_EN_LOW();
 			else
-			{
-				
 				HUB3_USB1_5V_EN_HIGH();
-			}
 			break;
 		case 1:
 			HUB3_USB2_5V_Set(en);
@@ -839,4 +1047,10 @@ void USB_5V_CT(uint8_t num, uint8_t en)
 		default:
 			break;
 	}
+}
+
+void usb_5v_onoff(uint8_t num, uint8_t en)
+{
+	uint8_t i = (num-1)/5;
+	USB_5V_CT(i, en);
 }
