@@ -359,6 +359,8 @@ void proc_handle(void)
 		if(HUB_en)
 		{
 			hub_handle(HUB_idx);
+			HUB_flag = 0;
+			Uart_send_feckback();
 		}
 		else
 		{
