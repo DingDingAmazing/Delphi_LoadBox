@@ -11,7 +11,7 @@ flag_control_on flag_on_record = {255, 255, 255, 255, 255, 255, 255};
 void init_out_bytes(void)
 {
 	I2C_IO_output.device_1st[0] = 0xC3;
-	I2C_IO_output.device_1st[1] = 0x00;
+	I2C_IO_output.device_1st[1] = 0x20;
 	I2C_IO_output.device_2nd[0] = 0x00;
 	I2C_IO_output.device_2nd[1] = 0x0C;
 }
@@ -288,14 +288,14 @@ void Aux_Switch(uint8_t num, uint8_t en)
 	{
 		case 1:
 			if(en == 0)
-			{
-				i2c_pin_reset(Aux3_EN);
+			{				
+				i2c_pin_set(Aux3_EN);
 				flag_on_record.aux_on_idx = 255;
 				LAMP_Switch(6, 0);
 			}
 			else
-			{
-				i2c_pin_set(Aux3_EN);
+			{				
+				i2c_pin_reset(Aux3_EN);
 				flag_on_record.aux_on_idx = 1;
 				LAMP_Switch(6, 1);
 			}
@@ -303,14 +303,14 @@ void Aux_Switch(uint8_t num, uint8_t en)
 			break;
 		case 2:
 			if(en == 0)
-			{
-				i2c_pin_reset(Aux1_EN);
+			{			
+				i2c_pin_set(Aux1_EN);
 				flag_on_record.aux_on_idx = 255;
 				LAMP_Switch(7, 0);
 			}
 			else
 			{
-				i2c_pin_set(Aux1_EN);
+				i2c_pin_reset(Aux1_EN);
 				flag_on_record.aux_on_idx = 2;
 				LAMP_Switch(7, 1);
 			}
@@ -319,13 +319,13 @@ void Aux_Switch(uint8_t num, uint8_t en)
 		case 3:
 			if(en == 0)
 			{
-				i2c_pin_reset(Aux2_EN);
+				i2c_pin_set(Aux2_EN);
 				flag_on_record.aux_on_idx = 255;
 				LAMP_Switch(8, 0);
 			}
 			else
 			{
-				i2c_pin_set(Aux2_EN);
+				i2c_pin_reset(Aux2_EN);
 				flag_on_record.aux_on_idx = 3;
 				LAMP_Switch(8, 1);
 			}
